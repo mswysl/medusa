@@ -1,37 +1,41 @@
-"use client"
-
-import { ProductCard, EmptyCard, ProductCardData } from "./ProductCard"
+import Link from "next/link"
+import { ProductCardData } from "./ProductCard"
+import { ProductCard, EmptyCard } from "./ProductCard"
 
 type Props = {
   products: ProductCardData[]
-  onProductClick: (product: ProductCardData) => void
   maxRows?: number
 }
 
 const COLS = 4
 
-// Glowing vertical spine between cells
 function Spine({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`self-stretch min-h-[140px] ${className}`}
+      className={className}
       style={{
-        background: "linear-gradient(180deg, transparent 8%, rgba(255,45,255,0.4) 50%, transparent 92%)",
+        alignSelf: "stretch",
+        minHeight: 140,
+        background:
+          "linear-gradient(180deg, transparent 8%, rgba(255,45,255,0.4) 50%, transparent 92%)",
         borderLeft: "1px solid rgba(255,45,255,0.25)",
         borderRight: "1px solid rgba(255,45,255,0.25)",
-        width: "5px",
+        width: 5,
         flexShrink: 0,
       }}
     />
   )
 }
 
-export function ProductGrid({ products, onProductClick, maxRows }: Props) {
+export function ProductGrid({ products, maxRows }: Props) {
   const items = maxRows ? products.slice(0, maxRows * COLS) : products
 
   if (!items.length) {
     return (
-      <p className="text-center py-10 text-[10px] tracking-[3px]" style={{ color: "var(--muted)" }}>
+      <p
+        className="text-center py-10 text-[10px] tracking-[3px]"
+        style={{ color: "var(--muted)" }}
+      >
         NO ITEMS
       </p>
     )
@@ -52,32 +56,40 @@ export function ProductGrid({ products, onProductClick, maxRows }: Props) {
             gridTemplateColumns: "36px 1fr 5px 1fr 5px 1fr 5px 1fr 36px",
           }}
         >
-          {/* Left arrow */}
+          {/* Arrow decorations */}
           <div className="flex items-center justify-center">
             <span className="text-[20px] opacity-60" style={{ color: "var(--pink)" }}>←</span>
           </div>
 
-          {/* Cells */}
           {Array.from({ length: COLS }).map((_, ci) => (
             <>
-              {ci > 0 && <Spine key={`spine-${ri}-${ci}`} className={ci === 3 ? "c4col" : ci === 2 ? "c3col" : ""} />}
-              {row[ci] ? (
-                <ProductCard
-                  key={row[ci].id}
-                  product={row[ci]}
-                  onClick={onProductClick}
-                  colClass={ci === 3 ? "hidden xl:flex" : ci === 2 ? "hidden lg:flex" : ""}
+              {ci > 0 && (
+                <Spine
+                  key={`spine-${ri}-${ci}`}
+                  className={
+                    ci === 3 ? "hidden xl:block" : ci === 2 ? "hidden lg:block" : ""
+                  }
                 />
+              )}
+              {row[ci] ? (
+                <Link
+                  key={row[ci].id}
+                  href={`/product/${row[ci].handle ?? row[ci].id}`}
+                  className={`no-underline ${ci === 3 ? "hidden xl:block" : ci === 2 ? "hidden lg:block" : ""}`}
+                >
+                  <ProductCard product={row[ci]} />
+                </Link>
               ) : (
                 <EmptyCard
                   key={`empty-${ri}-${ci}`}
-                  colClass={ci === 3 ? "hidden xl:block" : ci === 2 ? "hidden lg:block" : ""}
+                  className={
+                    ci === 3 ? "hidden xl:block" : ci === 2 ? "hidden lg:block" : ""
+                  }
                 />
               )}
             </>
           ))}
 
-          {/* Right arrow */}
           <div className="flex items-center justify-center">
             <span className="text-[20px] opacity-60" style={{ color: "var(--pink)" }}>→</span>
           </div>

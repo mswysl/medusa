@@ -2,15 +2,15 @@
 
 import { useRef } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { ProductCardData } from "@/components/catalog/ProductCard"
 import { fmt } from "@/lib/utils"
 
 type Props = {
   products: ProductCardData[]
-  onProductClick: (p: ProductCardData) => void
 }
 
-export function NewArrivalsCarousel({ products, onProductClick }: Props) {
+export function NewArrivalsCarousel({ products }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const fillRef = useRef<HTMLDivElement>(null)
 
@@ -39,13 +39,13 @@ export function NewArrivalsCarousel({ products, onProductClick }: Props) {
         <div className="flex gap-3 items-center">
           <CNavBtn onClick={() => scroll(-1)}>‹</CNavBtn>
           <CNavBtn onClick={() => scroll(1)}>›</CNavBtn>
-          <a
+          <Link
             href="/catalog"
             className="text-[9px] tracking-[2px] uppercase no-underline transition-opacity duration-200 hover:opacity-70"
             style={{ color: "var(--pink)" }}
           >
             VIEW ALL
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -56,10 +56,10 @@ export function NewArrivalsCarousel({ products, onProductClick }: Props) {
         style={{ scrollSnapType: "x mandatory" }}
       >
         {products.map((p) => (
-          <div
+          <Link
             key={p.id}
-            onClick={() => onProductClick(p)}
-            className="flex-none flex flex-col items-center gap-2 cursor-pointer"
+            href={`/product/${p.handle ?? p.id}`}
+            className="flex-none flex flex-col items-center gap-2 no-underline"
             style={{ width: 130, scrollSnapAlign: "start" }}
           >
             {/* Circle */}
@@ -98,12 +98,15 @@ export function NewArrivalsCarousel({ products, onProductClick }: Props) {
             <div className="text-[10px] tracking-[1px]" style={{ color: "var(--orange)" }}>
               {fmt(p.price)}
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
       {/* Progress bar */}
-      <div className="h-[3px] mt-[10px] rounded-full overflow-hidden" style={{ background: "var(--dim)" }}>
+      <div
+        className="h-[3px] mt-[10px] rounded-full overflow-hidden"
+        style={{ background: "var(--dim)" }}
+      >
         <div
           ref={fillRef}
           className="h-full rounded-full transition-all duration-300"
@@ -119,11 +122,7 @@ function CNavBtn({ onClick, children }: { onClick: () => void; children: React.R
     <button
       onClick={onClick}
       className="flex items-center justify-center w-[34px] h-[34px] text-[16px] cursor-pointer transition-all duration-200 border"
-      style={{
-        background: "rgba(8,0,12,0.85)",
-        borderColor: "var(--border)",
-        color: "var(--pink)",
-      }}
+      style={{ background: "rgba(8,0,12,0.85)", borderColor: "var(--border)", color: "var(--pink)" }}
       onMouseEnter={(e) => {
         const el = e.currentTarget as HTMLElement
         el.style.background = "rgba(255,45,255,0.2)"

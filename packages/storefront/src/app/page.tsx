@@ -1,23 +1,21 @@
-"use client"
-
-import { useState } from "react"
+import { Suspense } from "react"
 import { Hero } from "@/components/home/Hero"
 import { PromoStrip } from "@/components/home/PromoStrip"
 import { NewArrivalsCarousel } from "@/components/home/NewArrivalsCarousel"
 import { CategoryScroll } from "@/components/home/CategoryScroll"
 import { ProductGrid } from "@/components/catalog/ProductGrid"
-import { ProductModal } from "@/components/product/ProductModal"
-import { useProducts, STATIC_PRODUCTS } from "@/hooks/useProducts"
-import { ProductCardData } from "@/components/catalog/ProductCard"
+import { getProducts } from "@/lib/data"
 import Link from "next/link"
+import { GridSkeleton, CarouselSkeleton } from "@/components/ui/Skeletons"
 
-export default function HomePage() {
-  const { products, loading } = useProducts()
-  const [selected, setSelected] = useState<ProductCardData | null>(null)
+// Revalidate this page every 60 seconds (ISR)
+export const revalidate = 60
 
-  const displayProducts = loading ? STATIC_PRODUCTS : products
-  const featured = displayProducts.filter((p) => p.featured)
-  const preview = displayProducts.slice(0, 8)
+export default async function HomePage() {
+  const products = await getProducts({ limit: 12 })
+
+  const featured = products.filter((p) => p.featured)
+  const preview  = products.slice(0, 8)
 
   return (
     <>
@@ -26,7 +24,9 @@ export default function HomePage() {
 
       {/* New Arrivals */}
       <section className="relative z-10 max-w-[1400px] mx-auto px-4 py-8">
-        <NewArrivalsCarousel products={featured} onProductClick={setSelected} />
+        <Suspense fallback={<CarouselSkeleton />}>
+          <NewArrivalsCarousel products={featured} />
+        </Suspense>
       </section>
       <hr style={{ borderColor: "var(--border)", margin: 0 }} />
 
@@ -51,7 +51,7 @@ export default function HomePage() {
       </section>
       <hr style={{ borderColor: "var(--border)", margin: 0 }} />
 
-      {/* Featured Grid */}
+      {/* Featured Grid — server-rendered, no JS needed to display */}
       <section className="relative z-10 max-w-[1400px] mx-auto px-4 py-8">
         <div className="flex items-baseline justify-between mb-5">
           <h2
@@ -68,10 +68,10 @@ export default function HomePage() {
             VIEW ALL
           </Link>
         </div>
-        <ProductGrid products={preview} onProductClick={setSelected} maxRows={2} />
+        <Suspense fallback={<GridSkeleton rows={2} />}>
+          <ProductGrid products={preview} maxRows={2} />
+        </Suspense>
       </section>
-
-      <ProductModal product={selected} onClose={() => setSelected(null)} />
     </>
   )
 }

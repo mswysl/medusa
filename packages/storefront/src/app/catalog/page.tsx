@@ -1,25 +1,22 @@
-"use client"
-
-import { useState } from "react"
-import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 import { CategoryScroll } from "@/components/home/CategoryScroll"
 import { ProductGrid } from "@/components/catalog/ProductGrid"
-import { ProductModal } from "@/components/product/ProductModal"
-import { useProducts, STATIC_PRODUCTS } from "@/hooks/useProducts"
-import { ProductCardData } from "@/components/catalog/ProductCard"
+import { getProducts } from "@/lib/data"
+import { GridSkeleton } from "@/components/ui/Skeletons"
 
-export default function CatalogPage() {
-  const searchParams = useSearchParams()
-  const catParam = searchParams.get("cat") ?? "all"
-  const qParam = searchParams.get("q") ?? undefined
+export const revalidate = 60
 
-  const { products, loading } = useProducts(catParam !== "all" ? catParam : undefined, qParam)
-  const [selected, setSelected] = useState<ProductCardData | null>(null)
+type Props = {
+  searchParams: Promise<{ cat?: string; q?: string }>
+}
 
-  const displayProducts = loading ? STATIC_PRODUCTS : products
-  const filtered = catParam === "all"
-    ? displayProducts
-    : displayProducts.filter((p) => p.category === catParam)
+export default async function CatalogPage({ searchParams }: Props) {
+  const { cat: catParam = "all", q: qParam } = await searchParams
+
+  const products = await getProducts({
+    category: catParam !== "all" ? catParam : undefined,
+    q: qParam,
+  })
 
   return (
     <div className="max-w-[1400px] mx-auto px-4 pb-10">
@@ -29,14 +26,21 @@ export default function CatalogPage() {
           className="font-display text-[26px] tracking-[3px] text-white"
           style={{ fontFamily: "var(--font-bebas), sans-serif" }}
         >
-          {qParam ? `SEARCH: ${qParam.toUpperCase()}` : "CATALOG"}
+          {qParam
+            ? `SEARCH: ${qParam.toUpperCase()}`
+            : catParam !== "all"
+            ? catParam.toUpperCase()
+            : "CATALOG"}
         </h2>
-        <span className="text-[9px] tracking-[2px]" style={{ color: "var(--muted)" }}>
-          {filtered.length} ITEMS
+        <span
+          className="text-[9px] tracking-[2px]"
+          style={{ color: "var(--muted)" }}
+        >
+          {products.length} ITEMS
         </span>
       </div>
 
-      {/* Category filter */}
+      {/* Category filter — only shown when not in search mode */}
       {!qParam && (
         <div className="mb-5">
           <CategoryScroll activeKey={catParam} />
@@ -44,9 +48,20 @@ export default function CatalogPage() {
       )}
 
       {/* Grid */}
-      <ProductGrid products={filtered} onProductClick={setSelected} />
-
-      <ProductModal product={selected} onClose={() => setSelected(null)} />
+      <Suspense fallback={<GridSkeleton rows={3} />}>
+        <ProductGrid products={products} />
+      </Suspense>
     </div>
   )
+}
+
+/** Pre-render each category at build time */
+export async function generateStaticParams() {
+  return [
+    { },
+    { cat: "ss1" },
+    { cat: "ss2" },
+    { cat: "ls" },
+    { cat: "hd" },
+  ]
 }
