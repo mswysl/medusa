@@ -1,0 +1,28 @@
+{
+  "name": "mswysl-backend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "medusa build",
+    "start": "medusa start",
+    "dev": "medusa develop",
+    "seed": "medusa exec src/scripts/seed.ts"
+  },
+  "dependencies": {
+    "@medusajs/medusa": "^2.13.4",
+    "@medusajs/framework": "^2.13.4",
+    "@medusajs/file-s3": "^2.13.4",
+    "@medusajs/payment-stripe": "^2.13.4",
+    "@medusajs/cache-redis": "^2.13.4",
+    "@medusajs/event-bus-redis": "^2.13.4",
+    "@medusajs/workflow-engine-redis": "^2.13.4",
+    "@medusajs/notification-local": "^2.13.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
