@@ -46,3 +46,129 @@
   background-size: 40px 40px;
   background: repeat;
 }
+
+/* ============================================================
+   MSWYSL BRAND THEME — Dark mode overrides
+   Maps the Medusa UI token system to the mswysl palette:
+     Primary/interactive → magenta  (#ff2dff / #c400c4)
+     Background deep     → #080808 / #0f0010
+     Accent/price        → orange   (#ff6a00)
+============================================================ */
+.dark {
+  /* ── Backgrounds ─────────────────────────────────────── */
+  --bg-base:                  #080808;
+  --bg-subtle:                #0a000d;
+  --bg-component:             #0f0010;
+  --bg-field:                 rgba(255, 255, 255, 0.04);
+  --bg-field-component:       #080808;
+  --bg-field-hover:           rgba(255, 255, 255, 0.08);
+  --bg-field-component-hover: #0f0010;
+  --bg-base-hover:            #150018;
+  --bg-subtle-hover:          #0f0010;
+  --bg-base-pressed:          #1e001e;
+  --bg-subtle-pressed:        #150018;
+  --bg-component-hover:       rgba(255, 45, 255, 0.06);
+  --bg-component-pressed:     rgba(255, 45, 255, 0.12);
+  --bg-disabled:              #0f0010;
+  --bg-overlay:               rgba(4, 0, 8, 0.72);
+
+  /* Interactive highlight (links / focus rings) → pink */
+  --bg-interactive:           #c400c4;
+  --bg-highlight:             rgba(196, 0, 196, 0.12);
+  --bg-highlight-hover:       rgba(196, 0, 196, 0.2);
+
+  /* Switch */
+  --bg-switch-off:            #2a0030;
+  --bg-switch-off-hover:      #3a0044;
+
+  /* ── Foregrounds ─────────────────────────────────────── */
+  --fg-base:                  #f4f4f5;
+  --fg-subtle:                #c4a0c4;
+  --fg-muted:                 #7a5a7a;
+  --fg-disabled:              #3a003a;
+  --fg-on-color:              #ffffff;
+  --fg-on-inverted:           #080808;
+  --fg-interactive:           #ff2dff;
+  --fg-interactive-hover:     #ff80ff;
+  --fg-error:                 #fb7185;
+
+  /* ── Borders ─────────────────────────────────────────── */
+  --border-base:              rgba(255, 45, 255, 0.15);
+  --border-strong:            rgba(255, 45, 255, 0.3);
+  --border-interactive:       #ff2dff;
+  --border-error:             #fb7185;
+  --border-danger:            #be123c;
+  --border-transparent:       rgba(255, 255, 255, 0);
+
+  --border-menu-top:          rgba(255, 45, 255, 0.08);
+  --border-menu-bot:          rgba(255, 45, 255, 0.08);
+  --contrast-border-base:     rgba(255, 45, 255, 0.2);
+  --contrast-border-top:      #080808;
+  --contrast-border-bot:      rgba(255, 45, 255, 0.06);
+
+  /* ── Buttons ─────────────────────────────────────────── */
+  --button-neutral:           rgba(255, 45, 255, 0.06);
+  --button-neutral-hover:     rgba(255, 45, 255, 0.12);
+  --button-neutral-pressed:   rgba(255, 45, 255, 0.18);
+  --button-inverted:          #c400c4;
+  --button-inverted-hover:    #ff2dff;
+  --button-inverted-pressed:  #ff80ff;
+  --button-danger:            #9f1239;
+  --button-danger-hover:      #be123c;
+  --button-danger-pressed:    #e11d48;
+  --button-transparent:       rgba(255, 255, 255, 0);
+  --button-transparent-hover: rgba(255, 45, 255, 0.08);
+  --button-transparent-pressed: rgba(255, 45, 255, 0.12);
+
+  /* ── Contrast (sidebar / topbar backgrounds) ─────────── */
+  --contrast-bg-base:         #0f0010;
+  --contrast-bg-base-hover:   #150018;
+  --contrast-bg-base-pressed: #1e001e;
+  --contrast-bg-subtle:       rgba(255, 45, 255, 0.04);
+  --contrast-fg-primary:      rgba(255, 255, 255, 0.9);
+  --contrast-fg-secondary:    rgba(255, 45, 255, 0.6);
+
+  /* ── Tags ────────────────────────────────────────────── */
+  /* neutral → keep dim */
+  --tag-neutral-text:         #d4d4d8;
+  --tag-neutral-bg:           rgba(255, 45, 255, 0.06);
+  --tag-neutral-bg-hover:     rgba(255, 45, 255, 0.1);
+  --tag-neutral-border:       rgba(255, 45, 255, 0.12);
+  --tag-neutral-icon:         #7a5a7a;
+
+  /* purple (repurposed as brand accent) */
+  --tag-purple-text:          #ff80ff;
+  --tag-purple-bg:            rgba(196, 0, 196, 0.15);
+  --tag-purple-bg-hover:      rgba(196, 0, 196, 0.25);
+  --tag-purple-border:        rgba(255, 45, 255, 0.35);
+  --tag-purple-icon:          #ff2dff;
+
+  /* orange accent for prices / warnings */
+  --tag-orange-text:          #ff6a00;
+  --tag-orange-bg:            rgba(255, 106, 0, 0.1);
+  --tag-orange-bg-hover:      rgba(255, 106, 0, 0.18);
+  --tag-orange-border:        rgba(255, 106, 0, 0.3);
+  --tag-orange-icon:          #ff6a00;
+
+  /* Alphas */
+  --alpha-250:                rgba(255, 45, 255, 0.1);
+  --alpha-400:                rgba(255, 45, 255, 0.24);
+}
+
+/* ── Sidebar / topbar explicit dark recolor ──────────────── */
+.dark [data-radix-popper-content-wrapper],
+.dark [class*="bg-ui-bg-base"],
+.dark nav[class*="bg-"] {
+  background-color: var(--bg-base);
+}
+
+/* Workflow canvas dot grid → pink dots */
+.dark .worfklow-grid {
+  background-image: radial-gradient(rgba(255, 45, 255, 0.18) 1px, transparent 0);
+}
+
+/* Focus ring → pink */
+.dark *:focus-visible {
+  outline-color: #ff2dff;
+}
+
